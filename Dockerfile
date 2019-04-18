@@ -1,6 +1,6 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-# Base level OS setup, gets latest code for Ubuntu 16.04
+# Base level OS setup, gets latest code for Ubuntu 18.04
 RUN apt-get update
 RUN apt-get -y dist-upgrade
 
@@ -17,12 +17,14 @@ WORKDIR /opt/app
 # DO NOT EDIT ABOVE THIS LINE ----------------------------------------------------------------------------
 
 # These are libraries that are specific to example algorithm in this template, so its within the User configuration
-RUN pip3 install --upgrade tensorflow==1.5
+RUN pip3 install --upgrade tensorflow
 
 # DO NOT EDIT BELOW THIS LINE ----------------------------------------------------------------------------
 
 # Copy all code up to the working directory
-COPY . /opt/app
+COPY main.py /opt/app
+COPY algorithm.py /opt/app
+COPY lib /opt/app/lib
 
 # This is a template file that handles
 ENTRYPOINT ["python3", "main.py"]

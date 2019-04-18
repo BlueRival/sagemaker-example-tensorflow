@@ -11,50 +11,56 @@ parser.add_argument("mode",
 
 
 def main(args):
-  print(args.mode)
+    print(args.mode)
 
-  if args.mode == 'train':
-    algorithm.Init('train')
-    algorithm.Train()
-  elif args.mode == 'serve':
+    if args.mode == 'train':
+        algorithm.Init('train')
+        algorithm.Train()
+    elif args.mode == 'serve':
 
-    algorithm.Init('predict')
-    app = flask.Flask(__name__)
+        algorithm.Init('predict')
+        app = flask.Flask(__name__)
 
-    # required by AWS SageMaker, must return 200 and empty body
-    @app.route('/ping')
-    def ping():
-      return ''
+        # required by AWS SageMaker, must return 200 and empty body
+        @app.route('/ping')
+        def ping():
+            return 'OK'
 
-    @app.route('/invocations', methods=['POST'])
-    def prediction():
-      features = flask.request.get_json()
+        @app.route('/invocations', methods=['POST'])
+        def prediction():
 
-      if not features:
-        return 'must post json payload with content-type header', 400
+            try:
+                features = flask.request.get_json()
 
-      try:
-        result = algorithm.Predict(features)
-      except Exception as e:
-        print('exception', e)
-        return 'internal server error', 500
+                if not features:
+                    return 'must post json payload with content-type header', 400
 
-      return flask.jsonify(result)
+            except Exception as e:
+                print('exception', e)
+                return 'internal server error', 500
 
-    cherrypy.tree.graft(app, '/')
-    cherrypy.config.update({'server.socket_host': '0.0.0.0',
-                            'server.socket_port': 8080,
-                            'engine.autoreload.on': False,
-                            })
+            try:
+                result = algorithm.Predict(features)
+            except Exception as e:
+                print('exception', e)
+                return 'internal server error', 500
 
-    def shutdown(signum, frame):
-      cherrypy.engine.stop()
+            return flask.jsonify(result)
 
-    cherrypy.engine.start()
+        cherrypy.tree.graft(app, '/')
+        cherrypy.config.update({'server.socket_host': '0.0.0.0',
+                                'server.socket_port': 8080,
+                                'engine.autoreload.on': False,
+                                })
 
-    signal.signal(signal.SIGINT, shutdown)
-    signal.signal(signal.SIGTERM, shutdown)
+        def shutdown(signum, frame):
+            cherrypy.engine.stop()
+
+        cherrypy.engine.start()
+
+        signal.signal(signal.SIGINT, shutdown)
+        signal.signal(signal.SIGTERM, shutdown)
 
 
 if __name__ == "__main__":
-  main(parser.parse_args())
+    main(parser.parse_args())

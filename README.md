@@ -1,4 +1,4 @@
-# Template for SageMaker Algorithm Development v0.0.1
+# Template for SageMaker Algorithm Development v0.0.2
 
 The purpose of this code base is to provide a template for developing custom machine learning algorithms suitable for 
 deployment into Amazon SageMaker. The conventions used here are a combination of Docker and Python, all wired together 
@@ -87,6 +87,31 @@ is named file.sh, then the corresponding Windows file is file.bat. Also, the Win
 typing the name of the script, such as bin\train.bat. Windows scripts do not use the /bin/bash interpreter call to 
 prefix the script filename. 
 
+## Quick Start
+
+Check out the source code, make sure you have Docker installed/updated, and then run this:
+
+```bash
+
+# terminal 1
+chmod u+x bin/*
+./bin/docker-build.sh
+./bin/train.sh
+./bin/serve.sh
+
+# terminal 2
+curl -X POST \
+  http://localhost:8080/invocations \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"input1": 1,	
+	"input2": 0,	
+	"input3": 1
+}'
+
+```
+
 ## Development
 
 In order to start developing a new project from this template, do the following:
@@ -135,4 +160,5 @@ production.
 
 # Release History
 
-v0.0.1 - This release 
+v0.0.2 - Update to Ubuntu 18.04, tensorflow latest, fix training data for add classification
+v0.0.1 - Initial Release
