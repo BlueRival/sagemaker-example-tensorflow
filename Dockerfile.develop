@@ -1,0 +1,18 @@
+ARG MY_BASE_IMAGE=NOOP
+FROM $MY_BASE_IMAGE
+
+# In development we simulate the mount points created by SageMaker in production.
+# We create these mount points and expose them as volumes in development.
+
+RUN mkdir -p /opt/ml/input/data/train
+RUN mkdir -p /opt/ml/output
+RUN mkdir -p /opt/ml/model
+
+VOLUME [ "/opt/ml/input/data/train" ]
+VOLUME [ "/opt/ml/output" ]
+VOLUME [ "/opt/ml/model" ]
+
+# For development we mount this dynamically, so undo the copied in source code from base
+RUN rm -rf /opt/app
+RUN mkdir -p /opt/app
+VOLUME [ "/opt/app" ]
