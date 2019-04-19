@@ -89,7 +89,8 @@ prefix the script filename.
 
 ## Quick Start
 
-Check out the source code, make sure you have Docker installed/updated, and then run this:
+Check out the source code, make sure you have Docker installed/updated, and then run this using two different terminal 
+windows.
 
 ```bash
 
@@ -160,5 +161,5 @@ production.
 
 # Release History
 
-v0.0.2 - Update to Ubuntu 18.04, tensorflow latest, fix training data for add classification
-v0.0.1 - Initial Release
+- v0.0.2 - Update to Ubuntu 18.04, tensorflow latest, fix training data for add classification
+- v0.0.1 - Initial Release
